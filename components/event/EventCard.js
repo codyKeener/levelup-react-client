@@ -3,21 +3,25 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 const EventCard = ({
-  game, //
+  game,
   description,
   date,
   time,
   organizer,
-}) => (
-  <Card className="text-center">
-    <Card.Header>{game.title} Event</Card.Header>
-    <Card.Body>
-      <Card.Title>{date} at {time}</Card.Title>
-      <Card.Text>{description}</Card.Text>
-    </Card.Body>
-    <Card.Footer className="text-muted">Organized by: User #{organizer.id}</Card.Footer>
-  </Card>
-);
+}) => {
+  const newDate = new Date(date);
+
+  return (
+    <Card className="text-center">
+      <Card.Header>{game.title} Event</Card.Header>
+      <Card.Body>
+        <Card.Title>{newDate.toDateString()} at {(time.slice(0, 2) <= 12 ? time.slice(0, 2) : (time.slice(0, 2) - 12))}{time.slice(2, 5)} {(time.slice(0, 2) <= 11 ? 'am' : 'pm')}</Card.Title>
+        <Card.Text>{description}</Card.Text>
+      </Card.Body>
+      <Card.Footer className="text-muted">Organized by: User #{organizer.id}</Card.Footer>
+    </Card>
+  );
+};
 
 EventCard.propTypes = {
   game: PropTypes.shape({
