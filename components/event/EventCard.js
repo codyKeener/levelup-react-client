@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import { deleteEvent } from '../../utils/data/eventData';
 
 const EventCard = ({
   id,
@@ -10,9 +11,16 @@ const EventCard = ({
   date,
   time,
   organizer,
+  onUpdate,
 }) => {
   const newDate = new Date(date);
   const router = useRouter();
+
+  const deleteThisEvent = () => {
+    if (window.confirm(`Delete the event on ${date}?`)) {
+      deleteEvent(id).then(() => onUpdate());
+    }
+  };
 
   return (
     <Card className="text-center" style={{ width: '350px', marginBottom: '10px' }}>
@@ -33,6 +41,13 @@ const EventCard = ({
             router.push(`/events/edit/${id}`);
           }}
           >Edit
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              deleteThisEvent();
+            }}
+          >Delete
           </Button>
         </div>
       </Card.Footer>
@@ -64,6 +79,7 @@ EventCard.propTypes = {
     uid: PropTypes.string,
     bio: PropTypes.string,
   }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default EventCard;
