@@ -22,11 +22,16 @@ function Home() {
         >Register New Event
         </Button>
       </div>
-      {events.map((event) => (
-        <section key={`event--${event.id}`} className="event">
-          <EventCard game={event.game} description={event.description} date={event.date} time={event.time} organizer={event.organizer} />
-        </section>
-      ))}
+      <div style={{
+        display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', margin: '10px 0 10px',
+      }}
+      >
+        {events.map((event) => (
+          <section key={`event--${event.id}`} className="event">
+            <EventCard id={event.id} game={event.game} description={event.description} date={event.date} time={event.time} organizer={event.organizer} />
+          </section>
+        ))}
+      </div>
     </article>
   );
 }

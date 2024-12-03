@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
 const EventCard = ({
+  id,
   game,
   description,
   date,
@@ -10,20 +12,36 @@ const EventCard = ({
   organizer,
 }) => {
   const newDate = new Date(date);
+  const router = useRouter();
 
   return (
-    <Card className="text-center">
+    <Card className="text-center" style={{ width: '350px', marginBottom: '10px' }}>
       <Card.Header>{game.title} Event</Card.Header>
       <Card.Body>
         <Card.Title>{newDate.toDateString()} at {(time.slice(0, 2) <= 12 ? time.slice(0, 2) : (time.slice(0, 2) - 12))}{time.slice(2, 5)} {(time.slice(0, 2) <= 11 ? 'am' : 'pm')}</Card.Title>
         <Card.Text>{description}</Card.Text>
+        <Card.Text>Organized by: User #{organizer.id}</Card.Text>
       </Card.Body>
-      <Card.Footer className="text-muted">Organized by: User #{organizer.id}</Card.Footer>
+      <Card.Footer>
+        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+          <Button onClick={() => {
+            router.push(`/events/${id}`);
+          }}
+          >View
+          </Button>
+          <Button onClick={() => {
+            router.push(`/events/edit/${id}`);
+          }}
+          >Edit
+          </Button>
+        </div>
+      </Card.Footer>
     </Card>
   );
 };
 
 EventCard.propTypes = {
+  id: PropTypes.number.isRequired,
   game: PropTypes.shape({
     id: PropTypes.number,
     game_type: PropTypes.shape({
