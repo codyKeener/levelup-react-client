@@ -2,20 +2,43 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { createEvent } from '../../utils/data/eventData';
+import { updateEvent, getSingleEvent } from '../../utils/data/eventData';
 import { getGames } from '../../utils/data/gameData';
 
 const initialState = {
-  game: 0,
+  game: '',
   description: '',
   date: '',
   time: '',
+  organizer: '',
 };
 
-const EventForm = ({ user }) => {
+// const initialGameState = {
+//   skillLevel: 1,
+//   numberOfPlayers: 0,
+//   title: '',
+//   maker: '',
+//   gameTypeId: 0,
+// };
+
+const UpdateEvent = ({ user }) => {
   const [games, setGames] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(initialState);
   const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    getSingleEvent(id).then((event) => {
+      setCurrentEvent({
+        id: event.id,
+        game: event.game.id,
+        description: event.description,
+        date: event.date,
+        time: event.time,
+        organizer: event.organizer,
+      });
+    });
+  }, [id]);
 
   useEffect(() => {
     getGames().then(setGames);
@@ -34,15 +57,17 @@ const EventForm = ({ user }) => {
     e.preventDefault();
 
     const event = {
+      id: currentEvent.id,
       game: currentEvent.game,
       description: currentEvent.description,
       date: currentEvent.date,
       time: currentEvent.time,
+      organizer: currentEvent.organizer,
       userId: user.uid,
     };
 
     // Send POST request to your API
-    createEvent(event).then(() => router.push('/events'));
+    updateEvent(event).then(() => router.push(`/events/${id}`));
   };
 
   return (
@@ -79,10 +104,10 @@ const EventForm = ({ user }) => {
   );
 };
 
-EventForm.propTypes = {
+UpdateEvent.propTypes = {
   user: PropTypes.shape({
     uid: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default EventForm;
+export default UpdateEvent;
